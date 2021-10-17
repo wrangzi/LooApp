@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://.www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>LooCreative Application</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+  <script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+<div class="container fluid ">
+  <div class="m-2">
+    <div class="text-center"><h1>[[${pageTitle}]]</h1></div>
+  </div>
+
+  <div th:if="${message}" class="alert alert-success text-center">
+    [[${message}]]
+  </div>
+
+  <form th:action="@{/users/save}" th:object="${user}" method="post"  enctype="multipart/form-data"
+        style="max-width: 600px; margin : 0 auto;">
+    <div class="m-3">
+      <div class="form-group row" hidden>
+        <label class="col-form-label col-4">Id: </label>
+        <div class="col-8" >
+          <input type="text" class="form-control" th:field="*{id} " required
+                 minLength="8" maxlength="15"
+                 pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+                 title="ID must contain at least one lowercase letter, one uppercase letter, and one number"
+          >
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-form-label col-4">Full name: </label>
+        <div class="col-8">
+          <input type="text" class="form-control"th:field="*{username}" required
+                 minLength="2" maxlength="45">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-form-label col-4">Email: </label>
+        <div class="col-8">
+          <input type="text" class="form-control"th:field="*{email}" required
+                 minLength="8" maxlength="45"
+                 pattern="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,63}){1})$"
+                 title="Please enter a valid email address with 1 domain. ex) abc@defg.com "
+          >
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-form-label col-4">Phone: </label>
+        <div class="col-8">
+          <input type="text" class="form-control"th:field="*{phone_num}" required
+                 minLength="11" maxlength="45" >
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-form-label col-4">Address: </label>
+        <div class="col-8">
+          <input type="text" class="form-control"th:field="*{address}" required
+                 minLength="2" maxlength="45">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-form-label col-4">Emoji: </label>
+        <div class="col-8">
+          <input type="file" name="emoji" id="emoji" class="form-control" accept="image/png, image/jpeg, image/jpg" required/>
+          <img id="thumbnail"  width="250px" height="250px"/>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-form-label col-4">Password: </label>
+        <div class="col-8">
+          <input type="password" class="form-control" id="password" name="password" th:field="*{password}" required
+                 minLength="8" maxlength="70"
+                 pattern="((?=.*[a-z])(?=.*d)(?=.*[@#$%])(?=.*[A-Z]).{6,16})"
+                 title="There must be at least one lowercase letter, one uppercase letter, one number, one special character each!">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-form-label col-4">Confirm Password: </label>
+        <div class="col-8">
+          <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required
+                 minLength="8" maxlength="70"
+                 pattern="((?=.*[a-z])(?=.*d)(?=.*[@#$%])(?=.*[A-Z]).{6,16})"
+                 title="There must be at least one lowercase letter, one uppercase letter, one number, one special character each!">
+        </div>
+      </div>
+      <div class="form-group row" >
+        <label class="col-form-label col-4">Active: </label>
+        <div class="col-8" >
+          <input type="checkbox" class="form-control" th:field="*{active}"
+                 minLength="1" maxlength="2">
+        </div>
+      </div>
+      <span id="indicator"></span> <br>
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </form>
+</div>
+<script type="text/javascript">
+  $('document').ready(function(){
+    var password = document.getElementById("password")
+    var confirmPassword = document.getElementById("confirmPassword");
+
+    $('#emoji').change(function(){
+        showEmoji(this);
+    });
+    function validatePassword(){
+      if(password.value != confirmPassword.value) {
+        confirmPassword.setCustomValidity("Passwords Don't Match");
+      } else {
+        confirmPassword.setCustomValidity('');
+      }
+    }
+    password.onchange = validatePassword;
+    confirmPassword.onkeyup = validatePassword;
+  });
+  function showEmoji(fileInput){
+    file = fileInput.files[0];
+    reader = new FileReader();
+    reader.onload= function(e){
+      $('#thumbnail').attr('src',e.target.result)
+    };
+    reader.readAsDataURL(file);
+  };
+</script>
+</body>
+</html>
